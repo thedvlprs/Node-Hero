@@ -19,6 +19,8 @@
   "homepage": "https://github.com/fyunka/Node-Hero#readme",
   "dependencies": {
     "async": "^3.1.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^3.1.0",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
