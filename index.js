@@ -68,28 +68,131 @@
 //   console.log(`server is listening on ${port}`);
 // });
 
-const path = require('path');
+// const path = require('path');
+// const express = require('express');
+// const exphbs = require('express-handlebars');
+
+// const app = express();
+
+// app.engine(
+//   '.hbs',
+//   exphbs({
+//     defaultLayout: 'main',
+//     extname: '.hbs',
+//     layoutsDir: path.join(__dirname, 'views/layouts')
+//   })
+// );
+
+// app.set('view engine', '.hbs');
+// app.set('views', path.join(__dirname, 'views'));
+
+// app.get('/', (request, response) => {
+//   response.render('home', {
+//     name: 'Fyunka'
+//   });
+// });
+
+// DEBUG = express * app.listen(3000);
+
+'use strict';
+
+const pg = require('pg');
 const express = require('express');
-const exphbs = require('express-handlebars');
-
 const app = express();
+const bodyParser = require('body-parser');
+const port = 3000;
 
-app.engine(
-  '.hbs',
-  exphbs({
-    defaultLayout: 'main',
-    extname: '.hbs',
-    layoutsDir: path.join(__dirname, 'views/layouts')
-  })
-);
+const config = {
+  user: 'your-postgresqlusername-here',
+  database: 'your-dbname-here',
+  password: 'your-password-here',
+  port: 5432 // by Default
+};
 
-app.set('view engine', '.hbs');
-app.set('views', path.join(__dirname, 'views'));
+// pool takes the object above -config- as parameter
+const pool = new pg.Pool(config);
 
-app.get('/', (request, response) => {
-  response.render('home', {
-    name: 'Fyunka'
+// Example 1
+// pool.connect(function(err, client, done) {
+//   if (err) {
+//     return console.error('error fetching client from pool', err);
+//   }
+//   client.query('SELECT $1::varchar AS my_first_query', ['node hero'], function(
+//     err,
+//     result
+//   ) {
+//     done();
+
+//     if (err) {
+//       return console.error('error happened during query', err);
+//     }
+//     console.log(result.rows[0]);
+//     process.exit(0);
+//   });
+// });
+
+// Additional example
+// app.get('/', (req, res, next) => {
+//   pool.connect(function(err, client, done) {
+//     if (err) {
+//       console.log('Can not connect to the DB' + err);
+//     }
+//     client.query('SELECT * FROM users', function(err, result) {
+//       done();
+//       if (err) {
+//         console.log(err);
+//         res.status(400).send(err);
+//       }
+//       res.status(200).send(result.rows);
+//     });
+//   });
+// });
+
+// Example 2
+// NB: Andrey Melikhov, [Nov 23, 2019 at 00:00:31]: В пятой главе это опущено, но подразумевается, что у тебя должен быть подключён bodyparser чтобы забирать данные из post-запросов
+
+app.use(bodyParser.json());
+app.post('/users', (req, res, next) => {
+  const user = req.body;
+
+  pool.connect(function(err, client, done) {
+    if (err) {
+      // Передача ошибки в обработчик express
+      return next(err);
+    }
+    client.query(
+      'INSERT INTO users (name, stack) VALUES ($1, $2);',
+      [user.name, user.stack],
+      function(err, result) {
+        done(); // Этот коллбек сигнализирует драйверу pg, что соединение может быть закрыто или возвращено в пул соединений
+        if (err) {
+          // Передача ошибки в обработчик express
+          return next(err);
+        }
+        res.send(200);
+      }
+    );
   });
 });
 
-DEBUG = express * app.listen(3000);
+// роут для поиска пользователей Example 3
+// app.get('/users', (req, res, next) => {
+//   pool.connect(function(err, client, done) {
+//     if (err) {
+//       // Передача ошибки в обработчик express
+//       return next(err);
+//     }
+//     client.query('SELECT name, stack FROM users;', [], function(err, result) {
+//       done();
+//       if (err) {
+//         // Передача ошибки в обработчик express
+//         return next(err);
+//       }
+//       res.json(result.rows);
+//     });
+//   });
+// });
+
+app.listen(port, () => {
+  console.log(`Server running at: http://localhost:${port}/`);
+});
