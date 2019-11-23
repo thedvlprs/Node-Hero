@@ -94,23 +94,25 @@
 
 // DEBUG = express * app.listen(3000);
 
-'use strict';
+// Chapter 5
 
-const pg = require('pg');
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const port = 3000;
+// 'use strict';
 
-const config = {
-  user: 'your-postgresqlusername-here',
-  database: 'your-dbname-here',
-  password: 'your-password-here',
-  port: 5432 // by Default
-};
+// const pg = require('pg');
+// const express = require('express');
+// const app = express();
+// const bodyParser = require('body-parser');
+// const port = 3000;
+
+// const config = {
+//   user: 'your-postgresqlusername-here',
+//   database: 'your-dbname-here',
+//   password: 'your-password-here',
+//   port: 5432 // by Default
+// };
 
 // pool takes the object above -config- as parameter
-const pool = new pg.Pool(config);
+// const pool = new pg.Pool(config);
 
 // Example 1
 // pool.connect(function(err, client, done) {
@@ -151,29 +153,29 @@ const pool = new pg.Pool(config);
 // Example 2
 // NB: Andrey Melikhov, [Nov 23, 2019 at 00:00:31]: В пятой главе это опущено, но подразумевается, что у тебя должен быть подключён bodyparser чтобы забирать данные из post-запросов
 
-app.use(bodyParser.json());
-app.post('/users', (req, res, next) => {
-  const user = req.body;
+// app.use(bodyParser.json());
+// app.post('/users', (req, res, next) => {
+//   const user = req.body;
 
-  pool.connect(function(err, client, done) {
-    if (err) {
-      // Передача ошибки в обработчик express
-      return next(err);
-    }
-    client.query(
-      'INSERT INTO users (name, stack) VALUES ($1, $2);',
-      [user.name, user.stack],
-      function(err, result) {
-        done(); // Этот коллбек сигнализирует драйверу pg, что соединение может быть закрыто или возвращено в пул соединений
-        if (err) {
-          // Передача ошибки в обработчик express
-          return next(err);
-        }
-        res.send(200);
-      }
-    );
-  });
-});
+//   pool.connect(function(err, client, done) {
+//     if (err) {
+//       // Передача ошибки в обработчик express
+//       return next(err);
+//     }
+//     client.query(
+//       'INSERT INTO users (name, stack) VALUES ($1, $2);',
+//       [user.name, user.stack],
+//       function(err, result) {
+//         done(); // Этот коллбек сигнализирует драйверу pg, что соединение может быть закрыто или возвращено в пул соединений
+//         if (err) {
+//           // Передача ошибки в обработчик express
+//           return next(err);
+//         }
+//         res.send(200);
+//       }
+//     );
+//   });
+// });
 
 // роут для поиска пользователей Example 3
 // app.get('/users', (req, res, next) => {
@@ -193,6 +195,81 @@ app.post('/users', (req, res, next) => {
 //   });
 // });
 
-app.listen(port, () => {
-  console.log(`Server running at: http://localhost:${port}/`);
+// app.listen(port, () => {
+//   console.log(`Server running at: http://localhost:${port}/`);
+// });
+
+// Chapter 6
+// const request = require('request-promise');
+// // Отправка GET-запроса:
+// const options = {
+//   method: 'GET',
+//   uri: 'https://risingstack.com'
+// };
+
+// request(options)
+//   .then(function(response) {
+//     // Запрос был успешным, используйте объект ответа как хотите
+//   })
+//   .catch(function(err) {
+//     // Произошло что-то плохое, обработка ошибки
+//   });
+
+// Отправка POST-запроса:
+// const options = {
+//   method: 'POST',
+//   uri: 'https://risingstack.com/login',
+//   body: {
+//     foo: 'bar'
+//   },
+//   json: true
+//   // Тело запроса приводится к формату JSON автоматически
+// };
+
+// request(options)
+//   .then(function(response) {
+//     // Обработка ответа
+//   })
+//   .catch(function(err) {
+//     // Работа с ошибкой
+//   });
+
+const express = require('express');
+const rp = require('request-promise');
+const exphbs = require('express-handlebars');
+const path = require('path');
+const app = express();
+
+app.engine(
+  '.hbs',
+  exphbs({
+    defaultLayout: 'main',
+    extname: '.hbs',
+    layoutsDir: path.join(__dirname, 'views/layouts')
+  })
+);
+app.set('view engine', '.hbs');
+app.set('views', path.join(__dirname, 'views'));
+
+app.get('/:city', (req, res) => {
+  rp({
+    uri: 'http://dataservice.accuweather.com/locations/v1/cities/search',
+    qs: {
+      q: req.params.city,
+      apikey: 'api-key'
+      // Используйте ваш ключ для accuweather API
+    },
+    json: true
+  })
+    .then(data => {
+      res.render('home', {
+        res: JSON.stringify(data)
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.render('error');
+    });
 });
+
+app.listen(3000);
