@@ -234,42 +234,54 @@
 //     // Работа с ошибкой
 //   });
 
-const express = require('express');
-const rp = require('request-promise');
-const exphbs = require('express-handlebars');
-const path = require('path');
-const app = express();
+// const express = require('express');
+// const rp = require('request-promise');
+// const exphbs = require('express-handlebars');
+// const path = require('path');
+// const app = express();
 
-app.engine(
-  '.hbs',
-  exphbs({
-    defaultLayout: 'main',
-    extname: '.hbs',
-    layoutsDir: path.join(__dirname, 'views/layouts')
-  })
-);
-app.set('view engine', '.hbs');
-app.set('views', path.join(__dirname, 'views'));
+// app.engine(
+//   '.hbs',
+//   exphbs({
+//     defaultLayout: 'main',
+//     extname: '.hbs',
+//     layoutsDir: path.join(__dirname, 'views/layouts')
+//   })
+// );
+// app.set('view engine', '.hbs');
+// app.set('views', path.join(__dirname, 'views'));
 
-app.get('/:city', (req, res) => {
-  rp({
-    uri: 'http://dataservice.accuweather.com/locations/v1/cities/search',
-    qs: {
-      q: req.params.city,
-      apikey: 'api-key'
-      // Используйте ваш ключ для accuweather API
-    },
-    json: true
-  })
-    .then(data => {
-      res.render('home', {
-        res: JSON.stringify(data)
-      });
-    })
-    .catch(err => {
-      console.log(err);
-      res.render('error');
-    });
+// app.get('/:city', (req, res) => {
+//   rp({
+//     uri: 'http://dataservice.accuweather.com/locations/v1/cities/search',
+//     qs: {
+//       q: req.params.city,
+//       apikey: 'api-key'
+//       // Используйте ваш ключ для accuweather API
+//     },
+//     json: true
+//   })
+//     .then(data => {
+//       res.render('home', {
+//         res: JSON.stringify(data)
+//       });
+//     })
+//     .catch(err => {
+//       console.log(err);
+//       res.render('error');
+//     });
+// });
+
+// app.listen(3000);
+
+// Chapter 8
+const app = require('./app');
+const port = process.env.PORT || 3000;
+
+app.listen(port, function(err) {
+  if (err) {
+    throw err;
+  }
+
+  console.log(`server is listening on ${port}...`);
 });
-
-app.listen(3000);
