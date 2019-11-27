@@ -289,3 +289,13 @@
 // Chapter 9 (https://github.com/RisingStack/nodehero-testing/blob/master/readme.md)
 
 module.exports = require('./lib');
+
+/*
+Command to run the Coverage with UnitTesting :
+
+npm run coverage
+
+Command to run only the Test Cases:
+
+npm run test
+*/

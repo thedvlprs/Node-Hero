@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npm run test-unit",
     "test-unit": "NODE_ENV=test mocha --require co-mocha 'lib/*.spec.js'",
-    "start.dev": "nodemon index.js"
+    "start.dev": "nodemon index.js",
+    "coverage": "istanbul cover _mocha $(find ./lib -name \"*.spec.js\" -not -path \"./node_modules/*\")"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "co-mocha": "^1.2.2",
+    "istanbul": "^0.4.5",
     "mocha": "^6.2.2",
     "nodemon": "^2.0.1",
     "sinon": "^1.17.4",
