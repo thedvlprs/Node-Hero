@@ -4,7 +4,8 @@
   "description": "Getting started with Node.js",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test",
+    "test": "npm run test-unit",
+    "test-unit": "NODE_ENV=test mocha --require co-mocha 'lib/*.spec.js'",
     "start.dev": "nodemon index.js"
   },
   "repository": {
@@ -33,7 +34,11 @@
     "request-promise": "^4.2.5"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "co-mocha": "^1.2.2",
     "mocha": "^6.2.2",
-    "nodemon": "^2.0.1"
+    "nodemon": "^2.0.1",
+    "sinon": "^1.17.4",
+    "sinon-chai": "^2.8.0"
   }
 }

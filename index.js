@@ -275,13 +275,17 @@
 // app.listen(3000);
 
 // Chapter 8
-const app = require('./app');
-const port = process.env.PORT || 3000;
+// const app = require('./app');
+// const port = process.env.PORT || 3000;
 
-app.listen(port, function(err) {
-  if (err) {
-    throw err;
-  }
+// app.listen(port, function(err) {
+//   if (err) {
+//     throw err;
+//   }
 
-  console.log(`server is listening on ${port}...`);
-});
+//   console.log(`server is listening on ${port}...`);
+// });
+
+// Chapter 9 (https://github.com/RisingStack/nodehero-testing/blob/master/readme.md)
+
+module.exports = require('./lib');
