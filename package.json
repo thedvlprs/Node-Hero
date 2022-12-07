@@ -40,7 +40,7 @@
     "co-mocha": "^1.2.2",
     "istanbul": "^0.4.5",
     "mocha": "^6.2.2",
-    "nodemon": "^2.0.1",
+    "nodemon": "^2.0.20",
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0"
   }
