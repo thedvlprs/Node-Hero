@@ -31,7 +31,7 @@
     "minimist": "^1.2.6",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "pg": "^7.14.0",
+    "pg": "^8.11.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.5"
   },
@@ -40,7 +40,7 @@
     "co-mocha": "^1.2.2",
     "istanbul": "^0.4.5",
     "mocha": "^10.1.0",
-    "nodemon": "^2.0.20",
+    "nodemon": "^3.0.1",
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0"
   }
